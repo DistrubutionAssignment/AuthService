@@ -48,7 +48,10 @@ public class AuthController : ControllerBase
     {
         var user = await _userManager.FindByEmailAsync(dto.Email);
         if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
-            return Unauthorized();
+            return Unauthorized(new ErrorDto
+            {
+                Message = "Invalid email or password."
+            });
 
         var token = await _tokenService.CreateTokenAsync(user);
         return Ok(new AuthResponeDto { Token = token, ExpiresAt = DateTime.UtcNow.AddMinutes(double.Parse("60")) });
