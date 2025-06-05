@@ -18,12 +18,12 @@ public class TokenService : ITokenService
         _userManager = userManager;
     }
 
-    public async Task<string> CreateTokenAsync(ApplicationUser user)
+    public async Task<string> CreateTokenAsync(ApplicationUser user, string targetAudience)
     {
         var authClaims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
@@ -33,9 +33,12 @@ public class TokenService : ITokenService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+        var issuer = _config["Jwt:Issuer"];     
+        var audience = targetAudience;            
+
         var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
+            issuer: issuer,
+            audience: audience,
             claims: authClaims,
             expires: DateTime.UtcNow.AddMinutes(double.Parse(_config["Jwt:ExpiresInMinutes"]!)),
             signingCredentials: creds
