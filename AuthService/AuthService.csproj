@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="azure.messaging.servicebus" Version="7.19.0" />
     <PackageReference Include="Microsoft.aspnetcore.authentication.jwtbearer" Version="9.0.5" />
     <PackageReference Include="Microsoft.aspnetcore.identity.entityframeworkcore" Version="9.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />

@@ -1,7 +1,9 @@
 using System.Text;
+using AuthService.BackgroudServices;
 using AuthService.Data;
 using AuthService.Models;
 using AuthService.Services;
+using Azure.Messaging.ServiceBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -78,6 +80,13 @@ builder.Services.AddSwaggerGen(c =>
       { securityScheme, Array.Empty<string>() }
     });
 });
+
+builder.Services.AddSingleton(sp =>
+{
+    var sbConn = builder.Configuration["ServiceBus:ConnectionString"];
+    return new ServiceBusClient(sbConn);
+});
+builder.Services.AddHostedService<EmailConfirmedProcessor>();
 
 var app = builder.Build();
 
