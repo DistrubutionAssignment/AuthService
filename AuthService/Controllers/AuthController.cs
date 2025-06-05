@@ -2,6 +2,7 @@
 using AuthService.DTOs;
 using AuthService.Models;
 using AuthService.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -55,5 +56,31 @@ public class AuthController : ControllerBase
 
         var token = await _tokenService.CreateTokenAsync(user);
         return Ok(new AuthResponeDto { Token = token, ExpiresAt = DateTime.UtcNow.AddMinutes(double.Parse("60")) });
+    }
+
+
+    [AllowAnonymous]
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.Email))
+        {
+            return BadRequest(new { message = "Email is Required" });
+        }
+
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user == null)
+        {
+            return NotFound(new { message = "No User found" });
+        }
+
+        user.EmailConfirmed = true;
+        var updateResult = await _userManager.UpdateAsync(user);
+        if (!updateResult.Succeeded)
+        {
+            return StatusCode(500, new { message = "Could not verify email" });
+        }
+
+        return Ok(new { message = "Email verified" });
     }
 }
