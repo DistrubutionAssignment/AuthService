@@ -47,6 +47,11 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponeDto>> Login([FromBody] LoginDto dto)
     {
+        if (string.IsNullOrWhiteSpace(dto.Audience))
+        {
+            return BadRequest(new ErrorDto { Message = "Audience måste anges." });
+        }
+
         var user = await _userManager.FindByEmailAsync(dto.Email);
         if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
             return Unauthorized(new ErrorDto
@@ -54,8 +59,13 @@ public class AuthController : ControllerBase
                 Message = "Invalid email or password."
             });
 
-        var token = await _tokenService.CreateTokenAsync(user);
-        return Ok(new AuthResponeDto { Token = token, ExpiresAt = DateTime.UtcNow.AddMinutes(double.Parse("60")) });
+        var token = await _tokenService.CreateTokenAsync(user, dto.Audience);
+
+        return Ok(new AuthResponeDto
+        {
+            Token = token,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(double.Parse("60"))
+        });
     }
 
 
