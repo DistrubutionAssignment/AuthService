@@ -4,5 +4,5 @@ namespace AuthService.Services;
 
 public interface ITokenService
 {
-    Task<string> CreateTokenAsync(ApplicationUser user, string targetAudience);
+    Task<string> CreateTokenAsync(ApplicationUser user);
 }

@@ -18,7 +18,7 @@ public class TokenService : ITokenService
         _userManager = userManager;
     }
 
-    public async Task<string> CreateTokenAsync(ApplicationUser user, string targetAudience)
+    public async Task<string> CreateTokenAsync(ApplicationUser user)
     {
         var authClaims = new List<Claim>
         {
@@ -33,8 +33,8 @@ public class TokenService : ITokenService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var issuer = _config["Jwt:Issuer"];     
-        var audience = targetAudience;            
+        var issuer = _config["Jwt:Issuer"];
+        var audience = _config["Jwt:Audience"];
 
         var token = new JwtSecurityToken(
             issuer: issuer,
