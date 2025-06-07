@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +60,8 @@ builder.Services
           ValidateIssuerSigningKey = true,
           ValidIssuer = jwtIssuer,
           ValidAudience = jwtAudience,
-          IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+          IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+          RoleClaimType = ClaimTypes.Role
       };
   });
 
