@@ -2,6 +2,6 @@
 {
     public class EmailConfirmedPayload
     {
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
     }
 }

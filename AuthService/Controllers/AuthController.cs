@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
         _config = config;
     }
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto) 
     {
 
         if (await _userManager.FindByEmailAsync(dto.Email) != null)

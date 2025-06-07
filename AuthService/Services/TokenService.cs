@@ -18,7 +18,7 @@ public class TokenService : ITokenService
         _userManager = userManager;
     }
 
-    public async Task<string> CreateTokenAsync(ApplicationUser user)
+    public async Task<string> CreateTokenAsync(ApplicationUser user) //delvis genererad med chatgpt sätter upp claims principer och token generering till användare vid inloggning. 
     {
         var authClaims = new List<Claim>
         {
