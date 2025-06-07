@@ -14,7 +14,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 //Lägg till Key Vault
-var vaultUri = new Uri(builder.Configuration["KeyVault:Uri"]!);
+var vaultUri = new Uri(builder.Configuration["KeyVault:VaultUri"]!);
 builder.Configuration.AddAzureKeyVault(vaultUri, new DefaultAzureCredential());
 
 //  Läs secrets
