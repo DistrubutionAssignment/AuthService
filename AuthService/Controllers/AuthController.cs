@@ -27,12 +27,20 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
+
+        if (await _userManager.FindByEmailAsync(dto.Email) != null)
+        {
+            return Conflict(new ErrorDto { Message = "Email is already in use." });
+        }
+
         var user = new ApplicationUser
         {
             UserName = dto.Email,
             Email = dto.Email,
         };
+
         var result = await _userManager.CreateAsync(user, dto.Password);
+
         if (!result.Succeeded)
             return BadRequest(result.Errors);
 
