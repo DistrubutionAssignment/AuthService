@@ -41,7 +41,7 @@ public class AuthController : ControllerBase
 
         var result = await _userManager.CreateAsync(user, dto.Password);
 
-        if (!result.Succeeded)
+        if (!result.Succeeded) //seedar roller
             return BadRequest(result.Errors);
 
         if (!await _roleManager.RoleExistsAsync("Admin"))
@@ -73,7 +73,7 @@ public class AuthController : ControllerBase
 
 
     [AllowAnonymous]
-    [HttpPost("verify-email")]
+    [HttpPost("verify-email")] // Endpoint för att verifiera e-post
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
     {
         if (request == null || string.IsNullOrWhiteSpace(request.Email))

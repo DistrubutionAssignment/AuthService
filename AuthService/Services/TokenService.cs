@@ -12,7 +12,7 @@ public class TokenService : ITokenService
     private readonly IConfiguration _config;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public TokenService(IConfiguration config, UserManager<ApplicationUser> userManager)
+    public TokenService(IConfiguration config, UserManager<ApplicationUser> userManager) //tokenhantering
     {
         _config = config;
         _userManager = userManager;

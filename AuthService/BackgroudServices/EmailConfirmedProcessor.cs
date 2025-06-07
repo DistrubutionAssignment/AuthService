@@ -5,12 +5,12 @@ using Microsoft.Data.SqlClient;
 
 namespace AuthService.BackgroudServices;
 
-public class EmailConfirmedProcessor : BackgroundService
+public class EmailConfirmedProcessor : BackgroundService //mycket hjälp från chat gpt här.
 {
     private readonly ILogger<EmailConfirmedProcessor> _logger;
     private readonly IConfiguration _configuration;
     private readonly ServiceBusClient _serviceBusClient;
-    private ServiceBusProcessor _processor;
+    private ServiceBusProcessor _processor; // ServiceBusProcessor är IDisposable, så vi behöver hantera det korrekt
 
     public EmailConfirmedProcessor(
         ILogger<EmailConfirmedProcessor> logger,
@@ -22,9 +22,9 @@ public class EmailConfirmedProcessor : BackgroundService
         _serviceBusClient = serviceBusClient;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken) //denna mycket chatgpt o4 highmini
     {
-        string queueName = _configuration["ServiceBus:QueueName"];
+        string queueName = _configuration["ServiceBus:QueueName"]!; // Hämta kö-namnet från keyvault 
         if (string.IsNullOrWhiteSpace(queueName))
         {
             _logger.LogError("ServiceBus:QueueName är inte konfigurerat.");
@@ -74,13 +74,13 @@ public class EmailConfirmedProcessor : BackgroundService
         return Task.CompletedTask;
     }
 
-    private async Task MarkEmailVerifiedInDb(string email)
+    private async Task MarkEmailVerifiedInDb(string email) // Metod för att uppdatera databasen direkt med verifierad e-post
     {
-        string connString = _configuration.GetConnectionString("DefaultConnection");
+        string connString = _configuration.GetConnectionString("DefaultConnection")!; // Hämta anslutningssträngen från key vault
         await using var conn = new SqlConnection(connString);
         await conn.OpenAsync();
 
-        const string sql = @"
+        const string sql = @" 
                 UPDATE Users
                 SET emailVerified = 1
                 WHERE LOWER(Email) = @Email
